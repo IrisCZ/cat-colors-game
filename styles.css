@@ -1,0 +1,47 @@
+.hidden {
+  display: none;
+}
+.container{
+  width: 100%;
+  height: 100vh;
+  background-color: #cad0ce;
+  display: flex;
+  justify-content: center;
+}
+
+.board {
+  border: 5.5px solid #406158;
+  max-width: 58em;
+  max-height: 58em;
+  flex-grow: 1;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.colors{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 10em;
+  padding: 1em;
+}
+
+.cell{
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.cell.red{
+  background-color: red;
+}
+.cell.purple{
+  background-color: purple;
+}
+.cell.orange{
+  background-color: orange;
+}
+.cell.blue{
+  background-color: blue;
+}
