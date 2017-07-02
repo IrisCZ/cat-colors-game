@@ -1,10 +1,12 @@
 var colorSelected = "";
 var colors = ["red", "purple", "orange", "blue"];
+var counterClick = 0;
 
 function askForColumns(minColumns, maxColumns){
-  var columns = prompt("¿Cuantas columnas quieres?");
+  var columns = prompt("¿Cuántas columnas quieres?");
   if (columns > maxColumns || columns < minColumns){
-    alert("Wenwenwen... El número de columnas tiene que estar entre 3 y 29 coleguita");
+    alert("Wenwenwen... El número de columnas tiene que estar entre "
+          + minColumns + " y " + maxColumns + " coleguita");
     return askForColumns();
   }
   return columns;
@@ -35,22 +37,41 @@ function drawBoard(board){
     var row=board[y];
     for(var x=0; x<row.length; x++){
       var cell = row[x];
-      var color = colors[Math.floor((Math.random() * 4))];
-      var cellContent = $("<div>")
-      cellContent.addClass("cell").addClass(color);
+      var color = colors[Math.floor((Math.random() * colors.length))];
+      var cellContent = $("<div>");
+      cellContent.addClass("cell").addClass("cat").addClass(color);
       cellContent.css("width", (100/row.length)+"%").css("height", (100/row.length)+"%");
       cellContent.data("x", cell.x);
       cellContent.data("y", cell.y);
+      cellContent.attr("id", "cell_"+(cell.x)+"_"+(cell.y));
       cellContent.data("color",color);
       cellContent.appendTo(gameBoard);
       cellContent.click(function(){
-        //console.log("HAS PINCHADO EN ", $(this).data("x"), $(this).data("y"));
         var ball = $(this);
-        ball.removeClass(ball.data("color")).addClass(colorSelected);
-        ball.data("color", colorSelected);
+        var ballOldColor = ball.data("color");
+        var ballX = ball.data("x");
+        var ballY = ball.data("y");
+        var changed = changeColor(ballOldColor, ballX, ballY);
+        if (changed){
+          counterClick++;
+        };
+        console.log("¡Llevas " + counterClick+ " jugadas!")
       });
     }
   }
+}
+function changeColor(oldColor, x, y){
+  var ballAround= $('#cell_'+x+'_'+y);
+  if (ballAround.data("color") === oldColor && ballAround.data("color") !== colorSelected){
+    ballAround.removeClass(ballAround.data("color")).addClass(colorSelected);
+    ballAround.data("color", colorSelected);
+    changeColor(oldColor, x, y-1);
+    changeColor(oldColor, x+1, y);
+    changeColor(oldColor, x, y+1);
+    changeColor(oldColor, x-1, y);
+    return true;
+  }
+  return false;
 }
 
 function drawLegend(){
@@ -59,7 +80,7 @@ function drawLegend(){
     for (var z=0; z<colors.length; z++){
       var cellColorsLegend = $("<div>");
       var color = colors[z];
-      cellColorsLegend.addClass("cell").addClass(color);
+      cellColorsLegend.addClass("cell").addClass("legend").addClass(color);
       cellColorsLegend.data("color",color);
       cellColorsLegend.appendTo(colorsLegend);
       cellColorsLegend.click(function(){
@@ -71,8 +92,8 @@ function drawLegend(){
 
 function startGame(){
   drawLegend();
-  var columns = askForColumns(3, 29);
-  var board = createBoard(columns);
+  var columnsNumber = askForColumns(3, 29);
+  var board = createBoard(columnsNumber);
   drawBoard(board);
 }
 

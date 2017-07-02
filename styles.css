@@ -1,3 +1,16 @@
+.button{
+  background-color: #fff;
+  color: #fff;
+  height: 5em;
+  width: 5em;
+  margin:  1em;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.button:focus{
+  outline: none;
+}
+
 .hidden {
   display: none;
 }
@@ -10,7 +23,8 @@
 }
 
 .board {
-  border: 5.5px solid #406158;
+  border: 5.5px solid #000000;
+  background-color: #1c1b1b;
   max-width: 58em;
   max-height: 58em;
   flex-grow: 1;
@@ -26,11 +40,18 @@
   padding: 1em;
 }
 
-.cell{
+.cell.cat{
+  background-image: url('images/cat2.png');
+  background-size: cover;
+  outline: 1px solid #000000;
+  cursor: pointer;
+}
+
+.cell.legend{
   width: 2em;
   height: 2em;
-  border-radius: 50%;
   cursor: pointer;
+  border-radius: 50%;
 }
 
 .cell.red{
@@ -44,4 +65,10 @@
 }
 .cell.blue{
   background-color: blue;
+}
+.button.re-play{
+  position: absolute;
+  bottom: 0;
+  background-image: url('images/replay.png');
+  background-size: cover;
 }

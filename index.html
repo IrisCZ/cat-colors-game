@@ -6,13 +6,16 @@
     <script type="text/javascript" src="game.js"></script>
     <link rel="stylesheet" href="reset.css">
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="images/cat-fav-01.png">
     <title>Juego guay de colorines</title>
   </head>
   <body>
     <div class="container">
       <div class="board" id="board"></div>
-      <div class="colors" id="colors"></div>
-      <div><input type="button" value="Empezar de nuevo" onclick="startGame()"></div>
+      <div>
+        <div class="colors" id="colors"></div>
+        <input class="button re-play"  type="button" onclick="startGame()">
+      </div>
     </div>
     <div class="cell hidden js-cell"></div>
   </body>
