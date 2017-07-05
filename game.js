@@ -1,13 +1,18 @@
 var colorSelected = "";
 var colors = ["red", "purple", "orange", "blue"];
 var counterClick = 0;
+var smallDevice = (window.innerWidth <= 1024 && window.innerHeight <= 1570);
 
-function askForColumns(minColumns, maxColumns){
+function askForColumns(minColumns, maxColumns, maxColumnsSmallDevices){
   var columns = prompt("¿Cuántas columnas quieres?");
+  if((columns > maxColumnsSmallDevices || columns < minColumns) && smallDevice) {
+    alert("Con un aparato tan pequeño mejor no elijas más de 12 ¡No queremos dejarte ciego!");
+    return askForColumns(minColumns, maxColumns, maxColumnsSmallDevices);
+  }
   if (columns > maxColumns || columns < minColumns){
     alert("Wenwenwen... El número de columnas tiene que estar entre "
           + minColumns + " y " + maxColumns + " coleguita");
-    return askForColumns();
+    return askForColumns(minColumns, maxColumns, maxColumnsSmallDevices);
   }
   return columns;
 }
@@ -47,6 +52,10 @@ function drawBoard(board){
       cellContent.data("color",color);
       cellContent.appendTo(gameBoard);
       cellContent.click(function(){
+        if (!colorSelected){
+          alert("A alguien se le ha olvidado seleccionar un color... ¡Vuelve a intentarlo!");
+          return;
+        }
         var ball = $(this);
         var ballOldColor = ball.data("color");
         var ballX = ball.data("x");
@@ -59,6 +68,9 @@ function drawBoard(board){
       });
     }
   }
+  var boardHeight = $('.board').width();
+  $('.board').css({'height':boardHeight+'px'});
+
 }
 
 function changeColor(oldColor, x, y){
@@ -86,6 +98,8 @@ function drawLegend(){
       cellColorsLegend.appendTo(colorsLegend);
       cellColorsLegend.click(function(){
         colorSelected = $(this).data("color");
+        $(".legend").removeClass("selected");
+        $(this).addClass("selected");
       });
     }
   }
@@ -93,9 +107,13 @@ function drawLegend(){
 
 function startGame(){
   drawLegend();
-  var columnsNumber = askForColumns(3, 29);
+  var columnsNumber = askForColumns(3, 29, 12);
   var board = createBoard(columnsNumber);
   drawBoard(board);
+  $("#movesCounter").html(0);
+  counterClick=0;
+  colorSelected="";
+  $(".legend").removeClass("selected");
 }
 
 $(document).ready(
