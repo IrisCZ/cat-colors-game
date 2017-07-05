@@ -55,11 +55,12 @@ function drawBoard(board){
         if (changed){
           counterClick++;
         };
-        console.log("¡Llevas " + counterClick+ " jugadas!")
+        $("#movesCounter").html(counterClick);
       });
     }
   }
 }
+
 function changeColor(oldColor, x, y){
   var ballAround= $('#cell_'+x+'_'+y);
   if (ballAround.data("color") === oldColor && ballAround.data("color") !== colorSelected){
