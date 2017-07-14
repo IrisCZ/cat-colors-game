@@ -46,7 +46,7 @@ body{
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 10em;
+  height: 12em;
   padding: 1em;
 }
 
@@ -109,7 +109,7 @@ body{
   vertical-align: -webkit-baseline-middle;
 }
 .selected{
-  border: 10px solid #fff;
+  border: 8px solid #fff;
 }
 
 @media (max-width: 1024px) {

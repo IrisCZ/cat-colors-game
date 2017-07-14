@@ -1,20 +1,41 @@
+var TABLET_WIDTH = 1024;
+var TABLET_HEIGHT = 1570;
+var MIN_COLUMNS = 5;
+var MAX_COLUMNS = 29;
+var MAX_COLUMNS_SMALL_DEVICES = 12;
 var colorSelected = "";
 var colors = ["red", "purple", "orange", "blue"];
-var counterClick = 0;
-var smallDevice = (window.innerWidth <= 1024 && window.innerHeight <= 1570);
+var clickCount = 0;
 
-function askForColumns(minColumns, maxColumns, maxColumnsSmallDevices){
+function askForColumns(){
   var columns = prompt("¿Cuántas columnas quieres?");
-  if((columns > maxColumnsSmallDevices || columns < minColumns) && smallDevice) {
+
+  if(isSmallDevice() && outOfSmallDeviceRange(columns) ) {
     alert("Con un aparato tan pequeño mejor no elijas más de 12 ¡No queremos dejarte ciego!");
-    return askForColumns(minColumns, maxColumns, maxColumnsSmallDevices);
+    return askForColumns();
   }
-  if (columns > maxColumns || columns < minColumns){
+  if (isMaxColumns(columns) || isMinColumns(columns)){
     alert("Wenwenwen... El número de columnas tiene que estar entre "
-          + minColumns + " y " + maxColumns + " coleguita");
-    return askForColumns(minColumns, maxColumns, maxColumnsSmallDevices);
+          + MIN_COLUMNS + " y " + MAX_COLUMNS + " coleguita");
+    return askForColumns();
   }
   return columns;
+}
+function outOfSmallDeviceRange(size){
+  var isMaxColumnsSmallDevice = (size > MAX_COLUMNS_SMALL_DEVICES);
+  return (isMaxColumnsSmallDevice || isMinColumns(size));
+}
+function isMaxColumns (columns){
+  return (columns > MAX_COLUMNS);
+}
+function isMinColumns (columns){
+  return (columns < MIN_COLUMNS);
+}
+
+function isSmallDevice(){
+  var smallWidth = window.innerWidth <= TABLET_WIDTH;
+  var smallHeight = window.innerHeight <= TABLET_HEIGHT;
+  return (smallWidth && smallHeight);
 }
 
 function createBoard(columns){
@@ -31,7 +52,6 @@ function createBoard(columns){
     board.push(row);
   }
   return board;
-
 }
 
 function drawBoard(board){
@@ -62,9 +82,9 @@ function drawBoard(board){
         var ballY = ball.data("y");
         var changed = changeColor(ballOldColor, ballX, ballY);
         if (changed){
-          counterClick++;
+          clickCount++;
         };
-        $("#movesCounter").html(counterClick);
+        $("#movesCounter").html(clickCount);
       });
     }
   }
@@ -107,11 +127,11 @@ function drawLegend(){
 
 function startGame(){
   drawLegend();
-  var columnsNumber = askForColumns(3, 29, 12);
+  var columnsNumber = askForColumns();
   var board = createBoard(columnsNumber);
   drawBoard(board);
   $("#movesCounter").html(0);
-  counterClick=0;
+  clickCount=0;
   colorSelected="";
   $(".legend").removeClass("selected");
 }
