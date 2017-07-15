@@ -38,64 +38,70 @@ function isSmallDevice(){
   return (smallWidth && smallHeight);
 }
 
-function createBoard(columns){
-  var board = [];
+function drawBoard(columns){
+  var board = getCleanBoard();
+
   for(var y=0; y<columns; y++){
-    var row =[];
-    for(var x=0; x<columns; x++){
-      var cell = {
-        x : x,
-        y : y
-      }
-      row.push(cell);
-    }
-    board.push(row);
+    drawRow(columns, y, board);
   }
+  resizeHeightBoard(board);
+}
+function getCleanBoard(){
+  var board = $("#board");
+  board.html("");
   return board;
 }
 
-function drawBoard(board){
-  var gameBoard = $("#board");
-  gameBoard.html("");
+function resizeHeightBoard(board){
+  var boardHeight = board.width();
+  board.css({'height':boardHeight+'px'});
+}
 
-  for(var y=0; y<board.length; y++){
-    var row=board[y];
-    for(var x=0; x<row.length; x++){
-      var cell = row[x];
-      var color = colors[Math.floor((Math.random() * colors.length))];
-      var cellContent = $("<div>");
-      cellContent.addClass("cell").addClass("cat").addClass(color);
-      cellContent.css("width", (100/row.length)+"%").css("height", (100/row.length)+"%");
-      cellContent.data("x", cell.x);
-      cellContent.data("y", cell.y);
-      cellContent.attr("id", "cell_"+(cell.x)+"_"+(cell.y));
-      cellContent.data("color",color);
-      cellContent.appendTo(gameBoard);
-      cellContent.click(function(){
-        if (!colorSelected){
-          alert("A alguien se le ha olvidado seleccionar un color... ¡Vuelve a intentarlo!");
-          return;
-        }
-        var ball = $(this);
-        var ballOldColor = ball.data("color");
-        var ballX = ball.data("x");
-        var ballY = ball.data("y");
-        var changed = changeColor(ballOldColor, ballX, ballY);
-        if (changed){
-          clickCount++;
-        };
-        $("#movesCounter").html(clickCount);
-      });
-    }
+function drawRow(size, column, board){
+  for(var x=0; x<size; x++){
+    var cellContent = buildCellContent(size, x, column);
+    board.append(cellContent);
   }
-  var boardHeight = $('.board').width();
-  $('.board').css({'height':boardHeight+'px'});
+}
 
+function buildCellContent(numCells, x, y){
+  var color = getRandomColor();
+  var cellContent = $("<div>");
+  cellContent.addClass("cell").addClass("cat").addClass(color);
+  cellContent.css("width", (100/numCells)+"%").css("height", (100/numCells)+"%");
+  cellContent.data("x", x);
+  cellContent.data("y", y);
+  cellContent.attr("id", "cell_"+x+"_"+y);
+  cellContent.data("color",color);
+  cellContent.click(onClickElement);
+  return cellContent;
+}
+
+function getRandomColor(){
+  return colors[Math.floor((Math.random() * colors.length))];
+}
+
+function onClickElement(){
+  if (!colorSelected){
+    alert("A alguien se le ha olvidado seleccionar un color... ¡Vuelve a intentarlo!");
+    return;
+  }
+  var ball = $(this);
+  var ballOldColor = ball.data("color");
+  var ballX = ball.data("x");
+  var ballY = ball.data("y");
+  var changed = changeColor(ballOldColor, ballX, ballY);
+  if (changed){
+    clickCount++;
+  };
+  $("#movesCounter").html(clickCount);
 }
 
 function changeColor(oldColor, x, y){
   var ballAround= $('#cell_'+x+'_'+y);
-  if (ballAround.data("color") === oldColor && ballAround.data("color") !== colorSelected){
+  var isOldColor = ballAround.data("color")  === oldColor;
+  var isNotColorSelected = ballAround.data("color") !== colorSelected;
+  if (isOldColor && isNotColorSelected){
     ballAround.removeClass(ballAround.data("color")).addClass(colorSelected);
     ballAround.data("color", colorSelected);
     changeColor(oldColor, x, y-1);
@@ -128,8 +134,7 @@ function drawLegend(){
 function startGame(){
   drawLegend();
   var columnsNumber = askForColumns();
-  var board = createBoard(columnsNumber);
-  drawBoard(board);
+  drawBoard(columnsNumber);
   $("#movesCounter").html(0);
   clickCount=0;
   colorSelected="";
